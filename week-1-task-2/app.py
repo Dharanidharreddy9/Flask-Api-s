@@ -154,6 +154,6 @@ def signup():
 		return make_response('User already exists. Please Log in.', 202)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     app.run(debug=True)
