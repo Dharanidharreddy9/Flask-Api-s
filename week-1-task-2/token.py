@@ -3,8 +3,8 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 import uuid # for public id
 from werkzeug.security import generate_password_hash, check_password_hash
-# imports for PyJWT authentication
 import jwt
+from jwt import PyJWT
 from datetime import datetime, timedelta
 from functools import wraps
 from flask_migrate import Migrate
@@ -14,7 +14,7 @@ app = Flask(__name__)
 # configuration
 # NEVER HARDCODE YOUR CONFIGURATION IN YOUR CODE
 # INSTEAD CREATE A .env FILE AND STORE IN IT
-app.config['SECRET_KEY'] = 'your secret key'
+app.config['SECRET_KEY'] = 'secretkey'
 # database name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:root@localhost:5432/tokens'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -38,8 +38,8 @@ def token_required(f):
 	def decorated(*args, **kwargs):
 		token = None
 		# jwt is passed in the request header
-		if 'x-access-token' in request.headers:
-			token = request.headers['x-access-token']
+		if 'access_code' in request.headers:
+			token = request.headers['access_code']
 		# return 401 if token is not passed
 		if not token:
 			return jsonify({'message' : 'Token is missing !!'}), 401
@@ -84,10 +84,13 @@ def get_all_users(current_user):
 # route for logging user in
 @app.route('/login', methods =['POST'])
 def login():
+
 	# creates dictionary of form data
 	auth = request.form
+	# print(auth.get("email"))
 
 	if not auth or not auth.get('email') or not auth.get('password'):
+
 		# returns 401 if any email or / and password is missing
 		return make_response(
 			'Could not verify',
@@ -108,13 +111,15 @@ def login():
 		)
 
 	if check_password_hash(user.password, auth.get('password')):
+
 		# generates the JWT Token
 		token = jwt.encode({
 			'public_id': user.public_id,
-			'exp' : datetime.utcnow() + timedelta(minutes = 30)
+			'exp' : datetime.utcnow() + timedelta(minutes = 30),
+			'name' :  user.name
 		}, app.config['SECRET_KEY'])
 
-		return make_response(jsonify({'token' : token.decode('UTF-8')}), 201)
+		return make_response({'token' : token}, 201)
 	# returns 403 if password is wrong
 	return make_response(
 		'Could not verify',
@@ -154,6 +159,6 @@ def signup():
 		return make_response('User already exists. Please Log in.', 202)
 
 if __name__ == '__main__':
-    # with app.app_context():
-    #     db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
