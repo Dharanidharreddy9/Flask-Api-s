@@ -4,13 +4,13 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
-import os
 import logging
 
-
+# creating the record file to store all the errors and commands
 logging.basicConfig(filename='record.log', level=logging.DEBUG)
 app = Flask(__name__)
 
+# Connecting the database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:root@localhost:5432/fog'
 app.config['SQLACHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -18,7 +18,7 @@ db = SQLAlchemy(app)
 migrate = Migrate()
 ma = Marshmallow(app)
 
-# Creating a table
+# Creating a table with the students name
 class students(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
@@ -32,12 +32,14 @@ class students(db.Model):
         self.address = address
         self.pin = pin
 
+
 # Creating a schema
 class studentsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = students
 
 
+# we are inserting the data into database and get the data
 @app.route("/data/", methods=['POST', 'GET'])
 def data():
 
@@ -60,6 +62,7 @@ def data():
         return jsonify(studentsSchema(many=True).dump(all_data)),200
 
 
+# performing on individual records in database to get the data delete the data and modifying the data
 @app.route('/data/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 def onedata(id):
 
@@ -67,14 +70,7 @@ def onedata(id):
     if request.method == 'GET':
         college = students.query.get(id)
         print(college)
-        # print(college)
-        #
-        # dataDict = {
-        #     'name': str(college.name),
-        #     'city': str(college.city),
-        #     'address': str(college.address),
-        #     'pin': str(college.pin)
-        # }
+
         return jsonify(studentsSchema.dump(college)),200
 
     # DELETE the in the table
