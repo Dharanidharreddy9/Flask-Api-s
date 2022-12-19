@@ -56,5 +56,6 @@ def del_task(test):
     return jsonify({'outcome': "done with the deletion"}),200
 
 
+# Running the code
 if __name__ == "__main__":
     app.run(debug=True)

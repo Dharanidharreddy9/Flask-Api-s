@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 import uuid # for public id
 from werkzeug.security import generate_password_hash, check_password_hash
-
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
@@ -11,7 +10,6 @@ from functools import wraps
 
 # creates Flask object
 app = Flask(__name__)
-# configuration
 app.config['SECRET_KEY'] = 'itissecrete'
 # database connection
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:root@localhost:5432/task_2'
@@ -19,7 +17,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 # creates SQLALCHEMY object
 db = SQLAlchemy(app)
-
 
 # Database ORMs
 class User(db.Model):
@@ -38,7 +35,7 @@ def token_required(f):
 		# jwt is passed in the request header
 		if 'x-access-token' in request.headers:
 			token = request.headers['x-access-token']
-		# return 401 if token is not passed
+
 		if not token:
 			return jsonify({'message' : 'Token is missing !!'}), 401
 
@@ -54,11 +51,9 @@ def token_required(f):
 			}), 401
 		# returns the current logged in users contex to the routes
 		return f(current_user, *args, **kwargs)
-
 	return decorated
 
-# User Database Route
-# this route sends back list of users(token function is run before this)
+# User Database Route this route sends back list of users(token function is run before this)
 @app.route('/user', methods =['GET'])
 @token_required
 def get_all_users(current_user):
@@ -76,9 +71,7 @@ def get_all_users(current_user):
 			'name' : user.name,
 			'email' : user.email
 		})
-
 	return jsonify({'users': output})
-
 
 # route for logging user in
 @app.route('/login', methods =['POST'])
@@ -87,17 +80,14 @@ def login():
 	auth = request.form
 
 	if not auth or not auth.get('email') or not auth.get('password'):
-		# returns 401 if any email or / and password is missing
 		return make_response('Could not verify ',401,{'WWW-Authenticate' : 'Basic realm ="Login required !!"'})
 
 	user = User.query.filter_by(email = auth.get('email')).first()
 
 	if not user:
-		# returns 401 if user does not exist
 		return make_response('Could not verify ',401,{'WWW-Authenticate' : 'Basic realm ="User does not exist !!"'})
 
 	if check_password_hash(user.password, auth.get('password')):
-		# print(user.password)
 		# generates the JWT Token
 		token = jwt.encode({
 			'public_id': user.public_id,
@@ -105,7 +95,6 @@ def login():
 		}, app.config['SECRET_KEY'])
 
 		return make_response(jsonify({'token' : token}), 201)
-	# returns 403 if password is wrong
 	return make_response('Could not verify ',403,{'WWW-Authenticate' : 'Basic realm ="Wrong Password !!"'})
 
 
@@ -136,11 +125,8 @@ def signup():
 
 		return make_response('Successfully registered.', 201)
 	else:
-		# returns 202 if user already exists
 		return make_response('User already exists. Please Log in.', 202)
 
+
 if __name__ == "__main__":
-	# setting debug to True enables hot reload
-	# and also provides a debugger shell
-	# if you hit an error while running the server
 	app.run(debug = True)

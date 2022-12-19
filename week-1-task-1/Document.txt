@@ -1,0 +1,37 @@
+           FLASK API'S(ALL CRUD OPERATIONS)
+
+I have implemented all the CRUD operations using flask API's
+
+I am using 3 packages in flask(Flask, jsonify and request)
+
+GET:
+ GET method fetching all the data from the JSON file.
+Description: Given a route using @app.route inside of that I have given home URL to fetch all the data.
+
+GET:
+ We get a single record also from the file using id
+Description: Given a route using @app.route inside of that I have given URL and in URL I have passed a function and it will check the id so that we can get the single record from the file.
+             I am defining the data in that I have given 1 object to store the data after that I have passed a for loop and in this loop there is a condition it will check the id whatever the user given and it is print that id.
+
+POST:
+POST method is inserting the data whatever we are posting.
+Description: In post method I have check the data is I the form of JSON or not and there is title or not if the these 2 or not then it will shown error.
+            Get the data from the user and it will print from the output side.
+            After that it will check the id is there or not if the id is already there then it will print as duplicated id.
+            If the id not already there then the new data will be appended to the previous file.
+            Status: Added successfully
+
+PUT:
+PUT method is modifying the data.
+
+
+Delete:
+Delete method is Delete a single record or whole data from the file.
+Description: we can delete a single record using id.
+             In if condition I am checking id and it will delete the record.
+             I am using the remove method() to delete the record.
+
+
+setting debug to True enables hot reload
+and also provides a debugger shell
+if you hit an error while running the server

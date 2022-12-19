@@ -1,16 +1,18 @@
 import psycopg2
 
-
+# Connecting the database using psycopg2
 Conn = psycopg2.connect(
         host="localhost",
         database="task_4",
         user='admin',
         password='root')
 
-
+# While loop until user wants to exit from this loop it will continued
 while True:
     option =int(input('\n 1.Insert, 2.Read, 3.Update, 4.Delete, 5. Exit \n Enter any one option:'))
 
+
+    #If user select 1 then it will redirect to the Insert method
     if option == 1:
         try:
             cursor = Conn.cursor()
@@ -35,6 +37,7 @@ while True:
             print("Failed to insert record into publisher table", error)
 
 
+    #If user select 2 then it will redirect to the Get method
     elif option == 2:
         try:
             # creating a cursor object using he cursor() method
@@ -57,7 +60,7 @@ while True:
             print("Error while fetching data from PostgreSQL", error)
 
 
-
+    #If user select 3 then it will redirect to the Update method
     elif option == 3:
         def updateTable(publisherId, establishedYear):
             try:
@@ -80,6 +83,7 @@ while True:
         establishedYear = 2000
         updateTable(publisherId, establishedYear)
 
+    #If user select 4 then it will redirect to the Delete method
     elif option == 4:
         def deleteData(publisherId):
             try:
@@ -99,6 +103,8 @@ while True:
         publisherId = input("enter any value:")
         deleteData(publisherId)
 
+
+    #If user select 5 then user will be get out from this loop(function)
     elif option == 5:
         # cursor.close()
         Conn.close()

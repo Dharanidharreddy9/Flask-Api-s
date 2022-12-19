@@ -1,2 +1,1 @@
-# Flask-Api-s
-All the API's using CRUD Opearions with the database connection
+In all folders only the main file is important.

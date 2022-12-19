@@ -1,5 +1,6 @@
 import psycopg2
 
+# Connecting the database using psycopg2
 conn = psycopg2.connect(
             host="localhost",
             database="task_3",
@@ -7,18 +8,19 @@ conn = psycopg2.connect(
             password='root',
             port='5432')
 
+# While loop until user wants to exit from this loop it will continued
 while True:
     Topic = int(input('1.DDL, 2.DML,3.DCL,4.joins, 5.Direct Query from the Database, 6.Exit \n Select anyone Topic:' ))
 
-# DDL Queries
+    #If user select 1 then it will redirect to the DDL Queries
     if Topic == 1:
 
         while True:
             option = int(input('1.CREATE, 2.Drop, 3.Alter ,4.Truncate'))
 
+            #If user select 1 then it will redirect to the CREATE method
             if option ==1:
-                # Creating a cursor object using the
-                # cursor() method
+                # Creating a cursor object using the cursor() method
                 cursor = conn.cursor()
 
                 # Droping EMPLOYEE table if already exists.
@@ -37,6 +39,7 @@ while True:
                 conn.commit()
                 cursor.close()
 
+            #If user select 2 then it will redirect to the Drop method
             elif option == 2:
                 try:
                     cursor = connection.cursor()
@@ -49,6 +52,7 @@ while True:
                 except (Exception, psycopg2.Error) as error:
                     print("Error while fetching data from PostgreSQL", error)
 
+            #If user select 3 then it will redirect to the Alter method
             elif option == 3:
                 try:
                     cursor = conn.cursor()
@@ -61,6 +65,7 @@ while True:
                 except (Exception, psycopg2.Error) as error:
                     print("Error while fetching data from PostgreSQL", error)
 
+            #If user select 4 then it will redirect to the Delete the only data then this will be used method
             elif option == 4:
                 try:
                     cursor = connection.cursor()
@@ -73,79 +78,24 @@ while True:
                 except (Exception, psycopg2.Error) as error:
                     print("Error while fetching data from PostgreSQL", error)
 
-    # DML Queries
+
+    #If user select 1 then it will redirect to the DDL Queries
     elif Topic == 2:
-                option = int(input('1.Insert, 2.Update, 3.Delete ' ))
+                option = int(input('1.Insert, 2.Update, 3.Delete \n Enter one option:' ))
+
+                #If user select 1 then it will redirect to the CREATE method
                 if option ==1:
-                    try:
-                        cursor = conn.cursor()
-                        postgres_insert_query = """ INSERT INTO publisher(publisher_id,
-                        publisher_name, publisher_estd, publisher_location, publisher_type)
-                        VALUES (%s,%s,%s,%s,%s)"""
+                    print("Data will be inserted")
 
-                        user_input = input('Enter space-separated integers: ').split()
-
-                        record_to_insert = [(user_input)]
-
-                        for i in record_to_insert:
-                            cursor.execute(postgres_insert_query, i)
-
-                            conn.commit()
-                            count = cursor.rowcount
-                        print(count, "Record inserted successfully into publisher table")
-
-                        cursor.close()
-
-                    except (Exception, psycopg2.Error) as error:
-                        print("Failed to insert record into publisher table", error)
-
+                #If user select 2 then it will redirect to the update method
                 elif option == 2:
-                    def updateTable(publisherId, establishedYear):
-                        try:
-                            cursor = conn.cursor()
-                            # Update single record now
-                            sql_update_query = """Update publisher set publisher_estd = %s where publisher_id = %s"""
-                            cursor.execute(sql_update_query,(establishedYear, publisherId))
-                            conn.commit()
-                            count = cursor.rowcount
-                            print(count, "Record Updated successfully ")
+                    print("D`ata will be Updated")
 
-                            cursor.close()
-
-                        except (Exception, psycopg2.Error) as error:
-                            print("Error in update operation", error)
-
-
-                    # call the update function
-                    publisherId = input("Enter any value:")
-                    establishedYear = 2000
-                    updateTable(publisherId, establishedYear)
-
-
+                #If user select 3 then it will redirect to the Delete method
                 elif option == 3:
-                    def deleteData(publisherId):
-                        try:
-                            cursor = conn.cursor()
-                            # Update single record now
-                            sql_delete_query = """Delete from publisher where publisher_id = %s"""
-                            cursor.execute(sql_delete_query, (publisherId,))
-                            conn.commit()
-                            count = cursor.rowcount
-                            print(count, "Record deleted successfully ")
+                    print("Data will be deleted")
 
-                            cursor.close()
-
-                        except (Exception, psycopg2.Error) as error:
-                            print("Error in Delete operation", error)
-
-
-                    publisherId = input("enter any value:")
-                    deleteData(publisherId)
-
-                elif option == 4:
-                    print("hello world")
-
-    # DCL Queries
+    #If user select 3 then it will redirect to the DCL Queries
     elif Topic == 3:
                 option = int(input('1.Grant, 2.Revoke' ))
                 if option ==1:
@@ -154,7 +104,7 @@ while True:
                 elif option == 2:
                     print("revoke the data")
 
-    # Join methods
+    #If user select 4 then it will redirect to the Joins methods
     elif Topic == 4:
 
         while True:
@@ -220,7 +170,7 @@ while True:
                 except (Exception, psycopg2.Error) as error:
                     print("Error while fetching data from PostgreSQL", error)
 
-
+    #If user select 5 then it will redirect to whatever user wants to print, they can easily provide their own Queries
     elif Topic == 5:
 
         try:
@@ -236,7 +186,7 @@ while True:
         except (Exception, psycopg2.Error) as error:
             print("Error while fetching data from PostgreSQL", error)
 
-
+    #If user select 6 then whole process is closed.
     elif option == 6:
         # cursor.close()
         conn.close()
